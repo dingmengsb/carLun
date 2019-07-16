@@ -1,5 +1,4 @@
 import axios from "axios"
-import { getToken } from "./cookie"
 
 // create an axios instance
 const service = axios.create({
