@@ -1,7 +1,7 @@
 <template>
     <div class="car">
         <div class="cent">
-         <div class="img" @click="imgclick(getDetil.SerialID)">
+         <div class="img" @click="imgclick">
            <img :src="getDetil.CoverPhoto" alt="">
            <div>{{getDetil.pic_group_count}}张照片</div>
          </div>
@@ -10,7 +10,7 @@
                  <div>{{getDetil.market_attribute.dealer_price}}</div>
                  <div>指导价:{{getDetil.market_attribute.official_refer_price&&getDetil.market_attribute.official_refer_price}}</div>
              </div>
-             <div>{{getDetil.BottomEntranceTitle}}</div>
+             <div @click="btn" >{{getDetil.BottomEntranceTitle}}</div>
          </div>
          <div class="car_list">
            <div>
@@ -22,7 +22,7 @@
          </div>
           
         </div>
-         <div class="botton_flex">
+         <div class="botton_flex" @click="btn">
              <div>{{getDetil.BottomEntranceTitle}}</div>
              <div>本地经营商为你报价</div>
          </div>
@@ -51,7 +51,7 @@ export default {
          },
          list:state=>{
              let str=[];
-              state.home.getDetil.list&&state.home.getDetil.list.forEach(item=>{
+                state.home.getDetil.list&&state.home.getDetil.list.forEach(item=>{
                 str.push(item.market_attribute.year);
              })
              str=[...new Set(str)]
@@ -62,7 +62,7 @@ export default {
  },
  methods:{
     ...mapActions({
-       getDetile:"home/getDetile"
+       getDetile:"home/getDetile",
     }),
     clickFun(ind){
         this.arr=this.Croutput(this.list[ind])
@@ -78,7 +78,7 @@ export default {
         let obj=this.processingData(this.getDetil.list.filter(item=>item.market_attribute.year==val));
         obj=this.sort_OBJECT(obj);
         obj=this.sortYear(obj);
-         return obj;
+        return obj;
        }
      },
      sort_OBJECT(obj){ //对象排序
@@ -122,7 +122,6 @@ export default {
           return obj
         },
      inquiryy(id){
-         console.log(id);
          this.$router.push({
              name:"cheapPrice",
              query:{
@@ -130,11 +129,20 @@ export default {
              }
          })
      },
-     imgclick(ids){
+     btn(){
+       let id=this.getDetil.market_attribute.buy_car_detail_url.split("&")[1].split("=")[1];
+        this.$router.push({
+             name:"cheapPrice",
+             query:{
+                 id,
+             }
+         })
+     },
+     imgclick(){
          this.$router.push({
              name:"DeatilImg",
              query:{
-                 ids,
+                 ids:this.getDetil.SerialID
              }
          })
      }
@@ -144,8 +152,12 @@ export default {
     setTimeout(() => {
        this.arr=this.Croutput("全部");  
     }, 1000);
-  
  },
+ beforeDestroy(){
+      window.localStorage.setItem("arr",JSON.stringify(this.getDetil.list))
+      this.list.splice(0,1);
+      window.localStorage.setItem("list",JSON.stringify(this.list))
+ }
 }
 </script>
 

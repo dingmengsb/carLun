@@ -2,7 +2,7 @@
     <div>
         <div v-for="(item,index) in arr" :key="index">
                 <div class="head_div">{{item[0].exhaust_str}}/{{index}} {{item[0].inhale_type}}</div>
-                <div v-for="(val,ind) in item" :key="ind" class="car_types">
+                <div v-for="(val,ind) in item" :key="ind" class="car_types" @click="inquiry(val.car_id)">
                     <div>{{val.market_attribute.year}}款{{val.car_name}}</div>
                     <div>{{val.horse_power}}马力{{val.gear_num}}档{{val.trans_type}}</div>
                     <div>

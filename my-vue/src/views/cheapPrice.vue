@@ -1,7 +1,12 @@
 <template>
  <div class="con" v-if="cList.details">
-   <div class="ding">可向多个商家询问最低价，商家及时回复</div>
-   <div class="topCon">
+   <div class="ding">
+      <span>
+        可向多个商家询问最低价，商家及时回复
+      </span>
+     <img src="../image/icon-help.png" alt="">
+   </div>
+   <div class="topCon" @click="jumType">
     <img :src="cList.details.serial.Picture" alt="">
     <div class="topConZ">
       <span>{{cList.details.serial.AliasName}}</span>
@@ -23,7 +28,7 @@
        <span>城市</span>
        <span>{{this.cId.CityName}}></span>
      </div>
-     <button>询问底价</button>
+     <button>询最低价</button>
    </div>
    <div class="conBot">
      <span>选择报价经销商</span>
@@ -69,7 +74,10 @@ export default Vue.extend({
           cheap:"cheap/cheapList",
           city:"cheap/city",
           Con:'cheap/ConList'
-      })
+      }),
+      jumType(){
+        this.$router.replace({name:"typecar"})
+      }
   },
   created(){
       this.cheap();
@@ -79,8 +87,6 @@ export default Vue.extend({
           carId: this.$route.query.id,
           _1563276200625: ''
       })
-      console.log('qqqqqqqqqqqq',this.cId)
-    //   console.log(this.$route.query.cityid)
   }
 });
 </script>
@@ -98,7 +104,7 @@ body,html{
 .con>button{
   width: 100%;
   height: 1rem;
-  background: blue;
+ background: #3aacff;
   color: white;
   font-size: 0.4rem;
   outline: none;
@@ -107,16 +113,21 @@ body,html{
 .ding{
   width: 100%;
   height: 0.6rem;
-  background: lightgreen;
+  background: #79cd92;
   font-size: 0.3rem;
   line-height: 0.6rem;
   text-align: center;
   color: white;
 }
+.ding>img{
+   width: .3rem;
+   margin-left: .1rem;
+}
 .topCon{
   width: 100%;
   height: 2rem;
   display: flex;
+  background: #fff;
 }
 .topCon img{
   width: 2.2rem;
@@ -142,39 +153,52 @@ body,html{
 .conInfo{
   width: 100%;
   height: 4.2rem;
+  background: #fff;
 }
-.conInfo>span{
+.conInfo>span,.conBot>span{
+  box-sizing: border-box;
   width: 100%;
-  height: 0.4rem;
-  background: #e6e6e6;
+  height: 0.5rem;
+  line-height: .5rem;
   display: block;
-  line-height: 0.4rem;
+  font-size: .24rem;
+  color: #666;
+  background: #eee;
+  padding-left: .2rem;
 }
 .conInfo button{
-  width: 70%;
+  width: 80%;
   height: 0.7rem;
-  margin-left: 15%;
-  background: blue;
+  margin-left: 10%;
+  background: #3aacff;
   border: 0;
-  border-radius: 0.15rem;
+  border-radius: 0.1rem;
   color: white;
   outline: none;
   margin-top: 0.25rem;
+   font-size: .32rem;
 }
 .evee{
-  width: 95%;
+  width: 100%;
   height: 0.85rem;
   border-bottom: 1px solid #e6e6e6;
-  margin-left: 2.5%;
+  background: #fff;
+  display: flex;
+  justify-content: space-between;
+  font-size: .32rem;
 }
 .evee span{
-  font-size: 0.3rem;
   line-height: 0.85rem;
+  margin-left: .2rem;
 }
 .evee input{
   border: 0;
   outline: none;
   margin-left: 0.1rem;
+  font-size: .32rem;
+}
+.evee>span:nth-child(2){
+  margin-right: 0.5rem;
 }
 .conInfo :nth-child(4){
   display: flex;
@@ -183,20 +207,15 @@ body,html{
 .conBot{
   width: 100%;
 }
-.conBot>span{
-  width: 100%;
-  height: 0.4rem;
-  background: #e6e6e6;
-  display: block;
-  line-height: 0.4rem;
-} 
 .botEve{
-  width: 95%;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 0px .2rem;
   height: 1.6rem;
   border-bottom: 1px solid #e6e6e6;
   display: flex;
-  margin-left: 2.5%;
   justify-content: space-around;
+  background: #fff;
 }
 .botEve label{
   line-height: 1.6rem;
@@ -213,6 +232,8 @@ body,html{
 }
 .botEveZ span:nth-child(2){
   color: #cccccc;
+  max-width: 4.6rem;
+  font-size: .24rem;
 }
 .botEveZ span{
   margin-top: 0.1rem;
@@ -225,9 +246,11 @@ body,html{
 .botEveR span:nth-child(1){
   margin-top: 0.2rem;
   color: red;
+  font-size: .24rem;
 }
 .botEveR span:nth-child(2){
   color: #ccc;
+   font-size: .24rem;
 }
 .botEveR span{
   margin-top: 0.1rem;

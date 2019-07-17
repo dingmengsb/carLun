@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Home from '../views/Home.vue'
 import Detile from '../views/detile.vue'
 import CheapPrice from '../views/cheapPrice.vue'
+import TypeCar from '../views/typeCar.vue'
 
 import Car from '../views/detailImg/car.vue'
 import Color from '../views/detailImg/color.vue'
@@ -29,6 +30,11 @@ export default new Router({
       path:"/cheapPrice",
       name:"cheapPrice",
       component:CheapPrice,
+    },
+    {
+      path:"/typecar",
+      name:"typecar",
+      component:TypeCar,
     },
     {
       path:"/car",

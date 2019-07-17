@@ -34,6 +34,7 @@ const actions={
  },
  async getDetile({commit}:any,payload:any){
    let data:any=await getDetiles(payload);
+   console.log(payload);
    commit('choos',false)
    commit("getDetiless",data.data);
  }
