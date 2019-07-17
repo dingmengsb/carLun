@@ -1,10 +1,11 @@
-import {addLists,rightUpdate} from "@/server/home"
+import {addLists,rightUpdate,getDetiles} from "@/server/home"
 const state={
   list:[],
   arrs:[],
   num:0,
   lists:[],
   choos:false,
+  getDetil:{}={},
 };
 
 const getters={
@@ -31,6 +32,11 @@ const actions={
         commit('rightUpdata',data.data)
         commit('choos',true)
  },
+ async getDetile({commit}:any,payload:any){
+   let data:any=await getDetiles(payload);
+   commit('choos',false)
+   commit("getDetiless",data.data);
+ }
 };
 
 const mutations={
@@ -48,6 +54,9 @@ const mutations={
 },
 choos(state:any,payload:any){
   return state.choos=payload;
+},
+getDetiless(state:any,payload:any){
+  return state.getDetil=payload;
 }
 };
 

@@ -1,8 +1,8 @@
 <template>
     <div class="box">
      <div v-for="(val,ind) in arr" :key='ind'>
-       <p :ref="ind===num?'pref':null" @click="openFasle" >{{val}}</p>
-       <div v-if="item.Spelling===val" v-for="(item,index) in list" :key='index'>
+       <p class="header_pp" :ref="ind===num?'pref':null" @click="openFasle" >{{val}}</p>
+       <div class="top_heade" v-if="item.Spelling===val" v-for="(item,index) in list" :key='index'>
          <div @click="clickFun(item.MasterID)">
               <img :src="item.CoverPhoto" alt="">
               <div>{{item.Name}}</div>
@@ -51,18 +51,22 @@ export default {
   },
 }
 </script>
-
 <style>
 .box{
   width: 100%;
   font-size: 0.4rem;
+  margin: 0px;
+  padding: 0px;
 }
-.box>div>p{
+.box .header_pp{
+   margin-top: -.1rem;
     background: #f4f4f4;
     padding-left: .3rem;
     color: #aaa;
+    height: .1rem;
 }
 .box>div>div>div{
+  background: #fff;
   display: flex;
   height: 1rem;
   box-sizing: border-box;

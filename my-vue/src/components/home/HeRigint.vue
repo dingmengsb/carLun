@@ -16,7 +16,6 @@ export default {
   },
   methods:{
       clickInd(ind){
-          console.log(ind);
           this.updataNum(ind);
       },
       ...mapActions({

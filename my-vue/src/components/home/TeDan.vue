@@ -5,7 +5,7 @@
         <span>{{item.GroupName}}</span>
         <div v-for="(citem,cindex) in item.GroupList" :key="cindex" class="eveXia"  >
           <img :src="citem.Picture" alt="">
-          <div class="eveRight">
+          <div class="eveRight" @click="JumDetile(citem.SerialID)">
             <span>{{citem.AliasName}}</span>
             <span>{{citem.DealerPrice}}</span>
           </div>
@@ -37,6 +37,14 @@ export default Vue.extend({
       })
   },
   methods:{
+    JumDetile(id){
+      this.$router.push({
+        name:"detil",
+        query:{
+          id,
+        }
+      })
+    }
   },
 })
 </script>
@@ -52,6 +60,7 @@ export default Vue.extend({
   border-left: 1px solid #ccc;
   font-size: 14px;
   background: white;
+  color: #000;
 }
 @keyframes myfirst{
   0%   {right: -80%;}
