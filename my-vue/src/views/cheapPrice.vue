@@ -18,23 +18,23 @@
      <span>个人信息</span>
      <div class="evee">
        <span>姓名</span>
-       <input type="text" placeholder="输入您的真实中文姓名">
+       <input style="direction: rtl;" type="text" v-model="nameModel" placeholder="输入您的真实中文姓名">
      </div>
      <div class="evee">
        <span>手机</span>
-       <input type="text" placeholder="输入您的真实手机号码">
+       <input  style="direction: rtl;" maxlength="11" type="text" v-model="phoneModel" placeholder="输入您的真实手机号码">
      </div>
-     <div class="evee">
+     <div class="evee" @click="Clickcity">
        <span>城市</span>
-       <span>{{this.cId.CityName}}></span>
+       <span>{{CityName!=""?CityName:"北京"}}></span>
      </div>
-     <button>询最低价</button>
+     <button @click="btnDi">询最低价</button>
    </div>
    <div class="conBot">
      <span>选择报价经销商</span>
      <div class="botEve" v-for="(item,index) in cList.list" :key="index">
        <label for="radio">
-         <input type="checkbox">
+         <input type="checkbox" :data-items=item.dealerId>
        </label>
        <div class="botEveZ">
          <span>{{item.dealerShortName}}</span>
@@ -46,7 +46,31 @@
        </div>
      </div>
    </div>
-   <button>询最低价</button>
+   <button v-show="xunwen" @click="btnDi">询最低价</button>
+   <div class="city" v-if="choois">
+      <div>自动定位</div>
+      <div @click="btnZi">{{this.cId.CityName}}</div>
+      <div>省市</div>
+      <div class="city_list">
+        <div v-for="(item,index) in cityLists" :key="index" @click="itemCity(item.CityID)">
+          <div>{{item.CityName}}</div>
+          <div>></div>
+        </div>
+      </div>
+      <div class="city_right" v-if="chooisCity" @click="btnCkick($event)">
+         <div>
+            <div @click="cityDuang(item)" v-for="(item,index) in dataRight" :key="index">
+             {{item.CityName}}
+            </div>
+          </div>
+      </div>
+   </div>
+   <div v-if="popUpGood" class="popUp">
+      <div>
+          <div>{{popUpName}}</div>
+          <div @click="good">好</div>
+      </div>
+   </div>
  </div>
 </template>
 
@@ -56,8 +80,18 @@ import Vue from 'vue';
 import {mapActions,mapState} from "vuex"
 
 export default Vue.extend({ 
-  components:{
-   
+  data(){
+    return {
+      choois:false,
+      chooisCity:false,
+      dataRight:[],
+      CityName:"",
+      nameModel:"",
+      phoneModel:"",
+      popUpName:"",
+      popUpGood:false,
+      xunwen:false,
+    }
   },
   computed:{
     ...mapState({
@@ -65,18 +99,102 @@ export default Vue.extend({
           return state.cheap.cityIds
       },
       cList:(state:any) => {
+          
           return state.cheap.conList
       },
+      cityLists:(state:any)=>{
+        return state.cheap.cityList
+      }
     })
   },
   methods:{
       ...mapActions({
           cheap:"cheap/cheapList",
           city:"cheap/city",
-          Con:'cheap/ConList'
+          Con:'cheap/ConList',
+          citylist:"cheap/citylist",
+          cityRights:"cheap/cityRights",
+          setBao:"cheap/setBao"
       }),
       jumType(){
         this.$router.replace({name:"typecar"})
+      },
+       async Clickcity(){
+       let data= await this.citylist();
+       if(data.length>0){
+         this.choois=true;
+       }
+      },
+      btnZi(){
+        this.choois=false;
+      },
+     async itemCity(val:number){
+        this.chooisCity=true;
+        let data = await this.cityRights(val);
+        this.dataRight=data;
+      },
+      btnCkick(e:any){
+       if(e.target.className){
+         this.chooisCity=false;
+       }
+      },
+      cityDuang(val:any){
+        this.CityName=val.CityName
+        this.Con({
+          carId:  this.$route.query.id,
+          cityId: val.CityID,
+        });
+        this.choois=false;
+         this.chooisCity=false;
+      },
+     async btnDi(){
+        let arr:any="";
+        let input = document.querySelectorAll("input[type=checkbox]:checked")
+        this.popUpGood=true;  
+        if(this.nameModel==""){
+            this.popUpName="请输入名字"
+        }else if(!(/^1[3456789]\d{9}$/.test(this.phoneModel))){
+            this.popUpName="请输入正确的手机号"
+        }else if(input.length<0){
+           this.popUpName="请先选择报价经济商"
+        }else{
+            input.forEach((item:any)=>{
+            arr+=item.dataset.items+','
+          })
+        let data = await this.setBao({
+            carid: this.cList.details.car_id,
+            mobile: this.phoneModel,
+            dealerids: arr,
+            location: this.CityName,
+            carname: `${this.cList.details.market_attribute.year}款${this.cList.details.car_name}`,
+            locationid: 201,
+            name: this.nameModel,
+            channelid: 0,
+            ordertypeid: 1,
+            flag: 1,
+            openUDID: "4ac84102-07c5-4842-bbc9-707c882edd48",
+            appChannel:"",
+            os: "ios",
+            app:"",
+            systemVersion:"",
+            model:"",
+            cl_from: null
+          })
+          if(data.code==1){
+             this.popUpName="提交成功"
+          }
+        }
+      },
+      good(){
+          this.popUpGood=false;  
+          this.popUpName=""
+      },
+      scrollTo(){
+        if(document.documentElement.scrollTop>200){
+          this.xunwen=true;
+        }else{
+          this.xunwen=false; 
+        }
       }
   },
   created(){
@@ -87,6 +205,9 @@ export default Vue.extend({
           carId: this.$route.query.id,
           _1563276200625: ''
       })
+  },
+  mounted(){
+    window.addEventListener("scroll",this.scrollTo)
   }
 });
 </script>
@@ -98,8 +219,8 @@ body,html{
 }
 .con{
   width: 100%;
-  height: 100%;
   font-size: 0.14rem;
+  height: 100%;
 }
 .con>button{
   width: 100%;
@@ -109,6 +230,8 @@ body,html{
   font-size: 0.4rem;
   outline: none;
   border:0;
+  position: fixed;
+  bottom: 0rem;
 }
 .ding{
   width: 100%;
@@ -217,6 +340,9 @@ body,html{
   justify-content: space-around;
   background: #fff;
 }
+.botEve:last-child{
+  margin-bottom: 1rem;
+}
 .botEve label{
   line-height: 1.6rem;
   flex: 1;
@@ -254,6 +380,91 @@ body,html{
 }
 .botEveR span{
   margin-top: 0.1rem;
+}
+.city{
+  width: 100%;
+  height: 350%;
+  font-size: .28rem;
+  position: absolute;
+  top: 0rem;
+  left: 0rem;
+  background: #fff;
+}
+.city>div:nth-child(1),.city>div:nth-child(3){
+    height: .4rem;
+    line-height: .4rem;
+    font-size: .24rem;
+    padding-left: .2rem;
+    background: #f4f4f4;
+}
+.city>div:nth-child(2),.city_list>div{
+    padding-left: .2rem;
+    font-size: .28rem;
+    height: .8rem;
+    line-height: .8rem;
+    background: #fff;
+}
+.city_list>div{
+  display: flex;
+  justify-content: space-between;
+  padding: 0px .2rem;
+  border-bottom: 1px solid #eee;
+}
+.city_right{
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0rem;
+  left: 0rem;
+  background: rgba(0,0,0,.6);
+}
+.city_right>div{
+  position: absolute;
+  right: 0rem;
+  width:  75%;
+  height: 100%;
+  background: #fff;
+  animation:Mycity_right .5s;
+}
+.city_right>div>div{
+  height: .6rem;
+  line-height: .6rem;
+  font-size: .4rem;
+}
+@keyframes Mycity_right{
+  0%   {width:  0%;}
+  100% {width:  75%;}
+}
+.popUp{
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0rem;
+  left: 0rem;
+  background: rgba(0, 0, 0, .4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.popUp>div{
+  width:70%;
+  font-size: .3rem;
+  height: 2rem;
+  background: #fff;
+  border-radius: .2rem;
+}
+.popUp>div>div:nth-child(1){
+  display: flex;
+  justify-content: center;
+  border-bottom: .05rem solid #eee;
+  padding: .3rem 0;
+}
+.popUp>div>div:nth-child(2){
+  display: flex;
+  justify-content: center;
+  margin-top: .2rem;
+  color: #3aacff;
+  font-size: .38rem;
 }
 </style>
 

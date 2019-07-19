@@ -108,12 +108,12 @@ export default {
            return obj
         }, 
         sortYear(obj){
-            let arr=[];
+        let arr=[];
           for(let i in obj){
              obj[i].sort(function(a,b){
                    arr.push(a.market_attribute.year);
                  if(Array.from(new Set(arr)).length>1){
-                  return a.market_attribute.year-b.market_attribute.year
+                  return b.market_attribute.year-a.market_attribute.year
                  }else{
                      return a.exhaust-b.exhaust
                  }

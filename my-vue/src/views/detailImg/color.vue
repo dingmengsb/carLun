@@ -12,34 +12,33 @@
      </div>
  </div>
 </template>
-
-<script lang="ts">
+<script>
 import Vue from 'vue';
 import {mapState,mapActions} from 'vuex'
 export default Vue.extend({
   name: 'color',
   data(){
       return {
-          year:2019
+          year:2016
       }
   },
   methods:{
       ...mapActions({
 
       }),
-      clickyear(year:any){
+      clickyear(year){
           this.year = year
       },
       clickall(){
-          this.$router.push({
+          this.$router.replace({
               name:'DeatilImg'
           })
       },
-      clickcol(colorid:any,value:any){
-          this.$router.push({
+      clickcol(colorid,value){
+          this.$router.replace({
               name:'DeatilImg',
               query:{
-                  id:colorid,
+                  colorid:colorid,
                   name:value
               }
           })
@@ -47,13 +46,13 @@ export default Vue.extend({
   },
   computed:{
       ...mapState({
-          colors:(state:any)=>{return state.detailImg.colors}
+          colors:(state)=>{return state.detailImg.colors}
       })
   }
 });
 </script>
 
-<style>
+<style scoped>
 body,html,.warp{
         width:100%;
         height:100%;
@@ -88,8 +87,10 @@ body,html,.warp{
         width: 100%;
         height: .8rem;
         display: flex;
+        flex-wrap: nowrap;
         background: #fff;
         margin-top: .2rem;
+        overflow: auto;
     }
     .warp-year>div{
         width: 15%;
@@ -126,5 +127,6 @@ body,html,.warp{
         height: .6rem;
         line-height: .6rem;
     }
+
 </style>
 
